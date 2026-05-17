@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Customer Feedback System{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+{% block page_subtitle %}A quick view of customer feedback activity and sentiment trends{% endblock %}
+
+{% block content %}
+<section class="stats-grid">
+    <div class="stat-card">
+        <span>Total Feedback</span>
+        <h3>{{ cards.feedback }}</h3>
+    </div>
+    <div class="stat-card">
+        <span>Customers</span>
+        <h3>{{ cards.customers }}</h3>
+    </div>
+    <div class="stat-card">
+        <span>Products</span>
+        <h3>{{ cards.products }}</h3>
+    </div>
+    <div class="stat-card">
+        <span>Responses</span>
+        <h3>{{ cards.responses }}</h3>
+    </div>
+    <div class="stat-card">
+        <span>Negative Feedback</span>
+        <h3>{{ cards.negative }}</h3>
+    </div>
+    <div class="stat-card">
+        <span>Avg. Sentiment Score</span>
+        <h3>{{ cards.avg_score }}</h3>
+    </div>
+</section>
+
+<section class="content-grid two-col">
+
+    <!-- ✅ SENTIMENT (SMALL + CENTERED) -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Sentiment Breakdown</h3>
+        </div>
+
+        <div style="width: 300px; height: 300px; margin: auto;">
+            <canvas id="sentimentChart"></canvas>
+        </div>
+    </div>
+
+    <!-- ✅ CATEGORY -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Category Breakdown</h3>
+        </div>
+
+        <div style="width: 100%; height: 300px;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+</section> 
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Recent Feedback</h3>
+        <a class="button-link" href="{{ url_for('feedback_list') }}">View All</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Sentiment</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                    <th>Preview</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in recent_feedback %}
+                <tr>
+                    <td>{{ item.FeedbackID }}</td>
+                    <td>{{ item.CustomerName }}</td>
+                    <td>{{ item.ProductName }}</td>
+                    <td>{{ item.CategoryName }}</td>
+                    <td><span class="pill">{{ item.SentimentType }}</span></td>
+                    <td>{{ item.SentimentScore }}</td>
+                    <td>{{ item.FeedbackDate }}</td>
+                    <td>{{ item.ShortFeedback }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="empty-state">No feedback found yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+
+<!-- ✅ Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const sentimentData = {{ sentiment_breakdown | tojson }};
+const categoryData = {{ category_breakdown | tojson }};
+
+// ✅ Sentiment Chart
+const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+
+new Chart(sentimentCtx, {
+    type: 'doughnut',
+    data: {
+        labels: sentimentData.map(x => x.SentimentType),
+        datasets: [{
+            data: sentimentData.map(x => x.total)
+        }]
+    }
+});
+
+// ✅ Category Chart
+const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+
+new Chart(categoryCtx, {
+    type: 'bar',
+    data: {
+        labels: categoryData.map(x => x.CategoryName),
+        datasets: [{
+            label: 'Feedback Count',
+            data: categoryData.map(x => x.total)
+        }]
+    }
+});
+</script>
+
+{% endblock %} 

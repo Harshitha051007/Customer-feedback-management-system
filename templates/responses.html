@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Responses | Customer Feedback System{% endblock %}
+{% block page_title %}Admin Responses{% endblock %}
+{% block page_subtitle %}Track how the admin team responded to customer issues{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <div class="panel-header"><h3>Feedback Responses</h3></div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Response ID</th>
+                    <th>Feedback ID</th>
+                    <th>Customer</th>
+                    <th>Admin</th>
+                    <th>Date</th>
+                    <th>Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in response_items %}
+                <tr>
+                    <td>{{ item.ResponseID }}</td>
+                    <td>{{ item.FeedbackID }}</td>
+                    <td>{{ item.CustomerName }}</td>
+                    <td>{{ item.AdminName }}</td>
+                    <td>{{ item.ResponseDate }}</td>
+                    <td>{{ item.ResponseText }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="empty-state">No responses available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

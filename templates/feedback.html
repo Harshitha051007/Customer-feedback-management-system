@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Feedback | Customer Feedback System{% endblock %}
+{% block page_title %}Feedback{% endblock %}
+{% block page_subtitle %}All customer feedback and admin handling{% endblock %}
+
+{% block content %}
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Feedback List</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Sentiment</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                    <th>Feedback</th>
+                    <th>Handled By</th> <!-- ✅ NEW COLUMN -->
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in feedback_items %}
+                <tr>
+                    <td>{{ item.FeedbackID }}</td>
+                    <td>{{ item.CustomerName }}</td>
+                    <td>{{ item.ProductName }}</td>
+                    <td>{{ item.CategoryName }}</td>
+
+                    <!-- 🔥 Optional color styling -->
+                    <td>
+                        {% if item.SentimentType == 'Positive' %}
+                            <span style="color: green; font-weight: bold;">{{ item.SentimentType }}</span>
+                        {% elif item.SentimentType == 'Negative' %}
+                            <span style="color: red; font-weight: bold;">{{ item.SentimentType }}</span>
+                        {% else %}
+                            <span style="color: orange; font-weight: bold;">{{ item.SentimentType }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ item.SentimentScore }}</td>
+                    <td>{{ item.FeedbackDate }}</td>
+                    <td>{{ item.FeedbackText }}</td>
+
+                    <!-- ✅ ADMIN DISPLAY -->
+                    <td>
+                        {{ item.AdminName if item.AdminName else 'Auto Assigned' }}
+                    </td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        No feedback available.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %} 

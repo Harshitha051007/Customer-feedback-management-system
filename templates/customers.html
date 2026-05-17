@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Customers | Customer Feedback System{% endblock %}
+{% block page_title %}Customers{% endblock %}
+{% block page_subtitle %}Customer master data and contribution summary{% endblock %}
+
+{% block content %}
+
+<!-- 🔹 ADD CUSTOMER FORM -->
+<section class="panel form-panel">
+    <div class="panel-header">
+        <h3>Add New Customer</h3>
+    </div>
+
+    <form method="POST" class="form-grid">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" required>
+        </div>
+
+        <div class="full-width">
+            <button type="submit" class="primary-btn">Add Customer</button>
+        </div>
+    </form>
+</section>
+
+<!-- 🔹 CUSTOMER TABLE -->
+<section class="panel">
+    <div class="panel-header"><h3>Customer List</h3></div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Feedback Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in customer_items %}
+                <tr>
+                    <td>{{ item.CustomerID }}</td>
+                    <td>{{ item.Name }}</td>
+                    <td>{{ item.Email }}</td>
+                    <td>{{ item.FeedbackCount }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="empty-state">No customers available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %} 

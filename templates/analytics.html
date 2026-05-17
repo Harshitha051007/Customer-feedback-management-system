@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics | Customer Feedback System{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block page_subtitle %}Insights from customer feedback{% endblock %}
+
+{% block content %}
+
+<section class="content-grid two-col">
+
+    <!-- ✅ MONTHLY FEEDBACK -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Monthly Feedback</h3>
+        </div>
+
+        <div style="width: 100%; height: 300px;">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+
+    <!-- ✅ SENTIMENT (SMALL + CENTERED) -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Sentiment Analysis</h3>
+        </div>
+
+        <div style="width: 350px; height: 350px; margin: auto;">
+            <canvas id="sentimentChart"></canvas>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const monthlyData = {{ monthly_data | tojson }};
+    const sentimentData = {{ sentiment_data | tojson }};
+
+    // ✅ Monthly Chart
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(x => x.month),
+            datasets: [{
+                label: 'Feedback Count',
+                data: monthlyData.map(x => x.total),
+                borderColor: '#6366f1',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // ✅ Sentiment Chart (SMALL)
+    new Chart(document.getElementById('sentimentChart'), {
+        type: 'pie',
+        data: {
+            labels: sentimentData.map(x => x.SentimentType),
+            datasets: [{
+                data: sentimentData.map(x => x.total),
+                backgroundColor: ['#22c55e', '#ef4444', '#f59e0b']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+});
+</script>
+
+{% endblock %} 
